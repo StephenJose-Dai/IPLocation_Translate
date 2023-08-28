@@ -1,5 +1,5 @@
 # IPLocation_Translate
-1、一个用于IP信息翻译的工具，通过另一个项目IPLocation查询出来的IP结果放入到IPLocation_Translate中，会自动将国家、城市翻译成中文从而实现更直观的查看IP信息  
+1、一个用于IP信息翻译的工具，通过另一个项目IPLocation查询出来的IP结果放入到<a href="https://github.com/StephenJose-Dai/IPLocation">IPLocation_Translate</a>中，会自动将国家、城市翻译成中文从而实现更直观的查看IP信息  
 
 2、注意：index.html中的apikey和secretKey需要自行到百度翻译官网中申请，申请完后将这两个填入到index.html中再保存即可使用，差不多是在index.html的第137和138行。  
 
