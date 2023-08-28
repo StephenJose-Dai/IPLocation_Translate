@@ -1,7 +1,10 @@
 # IPLocation_Translate
-一个用于IP信息翻译的工具，通过另一个项目IPLocation查询出来的IP结果放入到IPLocation_Translate中，会自动将国家、城市翻译成中文从而实现更直观的查看IP信息  
-注意：index.html中的apikey和secretKey需要自行到百度翻译官网中申请，申请完后将这两个填入到index.html中再保存即可使用，差不多是在index.html的第137和138行。  
-此系统由<a href="https://daishenghui.club">戴戴的Linux</a>制作，由福建省智网云科科技有限公司、福建省数网云科技有限公司提供技术指导。  
+1、一个用于IP信息翻译的工具，通过另一个项目IPLocation查询出来的IP结果放入到IPLocation_Translate中，会自动将国家、城市翻译成中文从而实现更直观的查看IP信息  
+
+2、注意：index.html中的apikey和secretKey需要自行到百度翻译官网中申请，申请完后将这两个填入到index.html中再保存即可使用，差不多是在index.html的第137和138行。  
+
+3、此系统由<a href="https://daishenghui.club">戴戴的Linux</a>制作，由福建省智网云科科技有限公司、福建省数网云科技有限公司提供技术指导。  
+
 ## 环境
 1、Linux  
 2、Nginx
