@@ -70,6 +70,12 @@
 ### 不会编辑nginx的，可以将项目中iptranslate.conf直接复制丢到````/usr/local/nginx/conf/v_host/````中，只需要修改下域名、端口、日志存储路径即可，nginx.conf也记得要配置，不然读不到iptranslate.conf
 
 
+## 效果图
+
+
+![效果图](https://github.com/StephenJose-Dai/IPLocation_Translate/blob/master/xgt.png?raw=true)
+
+
 ## 扫一扫二维码关注我学习更多知识吧~
 
 ![戴戴的Linux](https://github.com/StephenJose-Dai/IPLocation/blob/master/daidailinux.jpg)
