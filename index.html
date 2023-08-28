@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IP信息翻译系统</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>IP内容翻译区</h1>
+  <input type="file" id="fileInput" style="display:none">
+  <button onclick="handleFileSelect()">选择JSON文件</button>
+  <table>
+    <thead>
+      <tr>
+        <th>IP地址</th>
+        <th>ASN</th>
+        <th>国家</th>
+        <th>城市</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- JSON数据将显示在这里 -->
+    </tbody>
+  </table>
+  
+  <script>
+    function handleFileSelect() {
+      const fileInput = document.getElementById('fileInput');
+      fileInput.click();
+      
+      fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          
+          reader.onload = async function(e) {
+            const content = e.target.result;
+            const jsonData = parseJSON(content);
+
+            await translateAndPopulate(jsonData);
+          };
+          
+          reader.readAsText(file);
+        }
+      });
+    }
+
+    function parseJSON(content) {
+      const lines = content.trim().split('\n');
+      const data = [];
+      
+      let currentItem = {};
+      lines.forEach(line => {
+        const [key, value] = line.split(': ');
+        if (key === 'IP地址') {
+          currentItem = {};
+        }
+        currentItem[key] = value;
+        if (key === '城市') {
+          data.push(currentItem);
+        }
+      });
+      
+      return data;
+    }
+    
+    async function jsonp(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+          delete window[callbackName];
+          document.body.removeChild(script);
+          resolve(data);
+        };
+
+        const script = document.createElement('script');
+        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function translateText(apiKey, secretKey, text, targetLanguage) {
+      const salt = (new Date()).getTime();
+      const sign = md5(apiKey + text + salt + secretKey);
+      const apiUrl = `https://fanyi-api.baidu.com/api/trans/vip/translate?q=${encodeURIComponent(text)}&from=auto&to=${targetLanguage}&appid=${apiKey}&salt=${salt}&sign=${sign}`;
+
+      const response = await jsonp(apiUrl); // 使用 jsonp 函数发起请求
+      const responseData = response.trans_result[0];
+      
+      return responseData.dst;
+    }
+    
+    function md5(value) {
+      return CryptoJS.MD5(value).toString(CryptoJS.enc.Hex);
+    }
+    
+    async function populateTable(data) {
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+      
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        
+        const ipCell = document.createElement('td');
+        ipCell.textContent = item['IP地址'];
+        row.appendChild(ipCell);
+        
+        const asnCell = document.createElement('td');
+        asnCell.textContent = item['ASN'];
+        row.appendChild(asnCell);
+        
+        const countryCell = document.createElement('td');
+        countryCell.textContent = item['国家'];
+        row.appendChild(countryCell);
+        
+        const cityCell = document.createElement('td');
+        cityCell.textContent = item['城市'];
+        row.appendChild(cityCell);
+        
+        tableBody.appendChild(row);
+      });
+    }
+
+    async function translateAndPopulate(data) {
+      const apiKey = '20210321555361524'; // 替换为您的百度开放云API Key
+      const secretKey = 'abcdefghijk123456789'; // 替换为您的百度开放云Secret Key
+      const targetLanguage = 'zh'; // 目标语言为中文
+      
+      const translatedData = [];
+      
+      for (const item of data) {
+        const translatedItem = { ...item };
+        translatedItem['国家'] = await translateText(apiKey, secretKey, item['国家'], targetLanguage);
+        translatedItem['城市'] = await translateText(apiKey, secretKey, item['城市'], targetLanguage);
+        translatedData.push(translatedItem);
+        await sleep(200); // 等待一段时间再进行下一个翻译，避免频繁请求
+        populateTable(translatedData); // 更新表格数据
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  </script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+</body>
+</html>
